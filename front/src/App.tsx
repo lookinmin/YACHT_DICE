@@ -1,26 +1,35 @@
+// src/App.tsx
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useRecoilState } from 'recoil';
+import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { themeAtom } from './atoms/themeAtom';
+import { lightTheme, darkTheme } from './styles/theme';
+import ThemeBtn from './components/ThemeBtn';
 
-function App() {
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: ${(props) => props.theme.background};
+    color: ${(props) => props.theme.color};
+    transition: all 0.25s linear;
+  }
+`;
+
+const App: React.FC = () => {
+  const [theme, setTheme] = useRecoilState(themeAtom);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+      <GlobalStyle />
+      <div className="App">
+        <ThemeBtn isDark={theme === 'dark'} toggleTheme={toggleTheme} theme={theme} />
+        <h1>Hello, World!</h1>
+      </div>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
