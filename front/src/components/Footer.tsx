@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { IoLogoGithub, IoLogoInstagram } from "react-icons/io5";
 import { SiVelog } from "react-icons/si";
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { themeAtom } from '../atoms/themeAtom';
 
 const StyledFooter = styled.div`
   display: flex;
@@ -11,15 +13,13 @@ const StyledFooter = styled.div`
   justify-content: center;
   border-top: 1px solid #7a7a7a;
   margin: 0 4vw;
-  padding: 2vh 0;
+  padding: 1vh 0;
 
   & > p:nth-child(1) {
-    font-weight: 500;
     font-size: 1.3rem;
   }
 
   & > p:nth-last-child(1) {
-    font-weight: 500;
     font-size: 0.8rem;
     color: #adadad;
     padding-top: 10px;
@@ -40,7 +40,8 @@ const StyledFooter = styled.div`
 `
 
 export const Footer:React.FC = () => {
-
+  const theme = useRecoilValue(themeAtom);
+  const iconColor = theme === 'dark' ? "#f7f7f7" : '#494949';
   const clickHandler = (e: number) => {
     switch (e) {
       case 1:
@@ -61,21 +62,21 @@ export const Footer:React.FC = () => {
       <div>
         <IoLogoGithub
           size={30}
-          color="#f7f7f7"
+          color={iconColor}
           title="lookinmin Github"
           className="icons"
           onClick={() => clickHandler(1)}
         />
         <SiVelog
           size={28}
-          color="#f7f7f7"
+          color={iconColor}
           title="lookin_min velog"
           className="icons"
           onClick={() => clickHandler(2)}
         />
         <IoLogoInstagram
           size={30}
-          color="#f7f7f7"
+          color={iconColor}
           title="lookin_min Instagram"
           className="icons"
           onClick={() => clickHandler(3)}
@@ -85,3 +86,4 @@ export const Footer:React.FC = () => {
     </StyledFooter>
   )
 }
+ 
