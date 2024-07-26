@@ -14,10 +14,10 @@ export const darkTheme: DefaultTheme = {
 export const tfTheme = createTheme({
   palette: {
     primary: {
-      main: '#87CEEB', // 기본 파란색
+      main: '#ADD8E6 ', // 기본 파란색
     },
     secondary: {
-      main: '#00ff00', // 연두색
+      main: '#87CEEB  ',
     },
   },
   components: {
@@ -26,17 +26,17 @@ export const tfTheme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: '10px', // 테두리 반경 설정
-            backgroundColor: '#87CEEB', // 기본 파란색 배경
+            backgroundColor: '#ADD8E6', // 기본 파란색 배경
             '& fieldset': {
-              borderColor: '#87CEEB', // 기본 파란색 테두리
+              borderColor: '#ADD8E6', // 기본 파란색 테두리
             },
             '&:hover fieldset': {
-              borderColor: '#87CEEB', // 기본 파란색 테두리
+              borderColor: '#ADD8E6', // 기본 파란색 테두리
             },
             '&.Mui-focused': {
-              backgroundColor: '#00ff00', // 포커스 시 연두색 배경
+              backgroundColor: '#87CEEB  ', // 포커스 시 연두색 배경
               '& fieldset': {
-                borderColor: '#00ff00', // 포커스 시 연두색 테두리
+                borderColor: '#87CEEB  ', // 포커스 시 연두색 테두리
               },
             },
           },
