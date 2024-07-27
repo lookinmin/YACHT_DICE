@@ -8,7 +8,6 @@ import ThemeBtn from './components/ThemeBtn';
 import { Route, Routes } from 'react-router-dom';
 import { StartPage } from './pages/StartPage';
 import { Footer } from './components/Footer';
-import { SignUp } from './pages/SignUp';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -29,12 +28,15 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
       <GlobalStyle />
       <div className="App">
-        <ThemeBtn isDark={theme === 'dark'} toggleTheme={toggleTheme} theme={theme} />
+        <ThemeBtn
+          isDark={theme === 'dark'}
+          toggleTheme={toggleTheme}
+          theme={theme}
+        />
         <Routes>
-          <Route path='/' element={<StartPage />}/>
-          <Route path='/signup' element={<SignUp />}/>
+          <Route path="/" element={<StartPage />} />
         </Routes>
-        <Footer/>
+        <Footer />
       </div>
     </ThemeProvider>
   );
