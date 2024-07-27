@@ -51,7 +51,11 @@ export const StartPage: React.FC = () => {
             <img src={imgUrl_blue} alt="img" width="400px" height="400px" />
           </ImgDiv>
 
-          {isSignUp ? <SignUp /> : <Login setIsSignUp={setIsSignUp} />}
+          {isSignUp ? (
+            <SignUp setIsSignUp={setIsSignUp} />
+          ) : (
+            <Login setIsSignUp={setIsSignUp} />
+          )}
         </ChdDiv>
       </StPg>
     </ThemeProvider>
