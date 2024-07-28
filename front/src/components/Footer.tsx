@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import { IoLogoGithub, IoLogoInstagram } from "react-icons/io5";
-import { SiVelog } from "react-icons/si";
+import React from 'react';
+import styled from 'styled-components';
+import { IoLogoGithub, IoLogoInstagram } from 'react-icons/io5';
+import { SiVelog } from 'react-icons/si';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { themeAtom } from '../atoms/themeAtom';
 
@@ -36,22 +36,21 @@ const StyledFooter = styled.div`
       cursor: pointer;
     }
   }
+`;
 
-`
-
-export const Footer:React.FC = () => {
+export const Footer: React.FC = () => {
   const theme = useRecoilValue(themeAtom);
-  const iconColor = theme === 'dark' ? "#f7f7f7" : '#494949';
+  const iconColor = theme === 'dark' ? '#f7f7f7' : '#494949';
   const clickHandler = (e: number) => {
     switch (e) {
       case 1:
-        window.open("https://github.com/lookinmin");
+        window.open('https://github.com/lookinmin/YACHT_DICE');
         break;
       case 2:
-        window.open("https://velog.io/@lookin_min/posts");
+        window.open('https://velog.io/@lookin_min/posts');
         break;
       case 3:
-        window.open("https://www.instagram.com/lookin_min/");
+        window.open('https://www.instagram.com/lookin_min/');
         break;
     }
   };
@@ -84,6 +83,5 @@ export const Footer:React.FC = () => {
       </div>
       <p>@Copyright lookin_min. All rights reserved. 2024</p>
     </StyledFooter>
-  )
-}
- 
+  );
+};

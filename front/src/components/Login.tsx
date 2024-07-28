@@ -5,6 +5,7 @@ import { tfTheme } from '../styles/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { LoginProps } from '../types/login';
+import Button from '@mui/material/Button';
 
 const LoginDiv = styled.div`
   display: flex;
@@ -22,7 +23,7 @@ const LoginDiv = styled.div`
   }
 
   & > #txtBtn {
-    width: 98%;
+    width: 100%;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -42,7 +43,7 @@ const LoginDiv = styled.div`
 export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
   return (
     <LoginDiv>
-      <p>LOGIN</p>
+      <p>WELCOME!</p>
       <TextField id="outlined-basic" label="ID" variant="outlined" fullWidth />
       <TextField
         id="outlined-basic"
@@ -53,8 +54,10 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
       />
 
       <div id="txtBtn">
-        <p onClick={() => setIsSignUp(true)}>SIGN UP</p>
-        <p>LOGIN</p>
+        <Button variant="text" onClick={() => setIsSignUp(true)}>
+          SIGN UP
+        </Button>
+        <Button variant="text">LOGIN</Button>
       </div>
     </LoginDiv>
   );
