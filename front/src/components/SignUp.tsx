@@ -8,7 +8,7 @@ import { BsPersonCircle } from 'react-icons/bs';
 import { GoMail } from 'react-icons/go';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { useMutation } from 'react-query';
-import { signup } from '../api/instance';
+import { checkId, signup } from '../api/instance';
 import Button from '@mui/material/Button';
 
 const SignUpDiv = styled.div`
@@ -78,11 +78,14 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
     password: '',
   });
 
-  const [pwc, setPwc] = useState('');
   const [idError, setIdError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  // 비밀번호 검사, 완전한지, 똑같은지
+  const [pwc, setPwc] = useState('');
   const [pwError, setPwError] = useState<string | null>(null);
   const [pwcError, setPwcError] = useState<string | null>(null);
+  // ID 중복 검사
+  const [isIdDuplicate, setIsIdDuplicate] = useState<boolean>(false);
 
   // react-query로 post (mutation)
   const mutation = useMutation(
@@ -90,7 +93,7 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
       signup(newUser),
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -101,7 +104,17 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
       if (value.length < 3) {
         setIdError('ID는 최소 3자 이상이어야 합니다.');
       } else {
-        setIdError(null);
+        try {
+          const res = await checkId(value);
+          setIsIdDuplicate(res.data.isDuplicate);
+          if (res.data.isDuplicate) {
+            setIdError('이미 사용 중인 ID입니다.');
+          } else {
+            setIdError(null);
+          }
+        } catch (err) {
+          alert('ERROR ID 중복체크 실패');
+        }
       }
     } else if (name === 'email') {
       const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -14,3 +14,7 @@ export const signup = async (newUser: {
 }) => {
   return axiosInstance.post('/signup', newUser);
 };
+
+export const checkId = async (id: string) => {
+  return axiosInstance.get(`/check-id/${id}`);
+};
