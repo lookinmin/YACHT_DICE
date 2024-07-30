@@ -1,22 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app import api
+from app.routers import auth
 
 app = FastAPI()
 
+# CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins = {"*"},
+    allow_origins=["*"],  # 모든 출처 허용
     allow_credentials=True,
-    allow_methods={"OPTIONS", "GET", "POST"},
-    allow_headers={"*"},
+    allow_methods=["*"],  # 모든 HTTP 메서드 허용
+    allow_headers=["*"],  # 모든 헤더 허용
 )
 
-@app.on_event("startup")
-def on_startup():
-    from app import models
-    from app.database import engine
-    
-    models.Base.metadata.create_all(bind=engine)
-
-app.include_router(api.router)
+app.include_router(auth.router)

@@ -114,6 +114,7 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
           }
         } catch (err) {
           alert('ERROR ID 중복체크 실패');
+          setIdError('SERVER ERROR');
         }
       }
     } else if (name === 'email') {
@@ -145,18 +146,22 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const { id, email, password } = formData;
-    mutation.mutate(
-      { id, email, password },
-      {
-        onSuccess: () => {
-          setIsSignUp(false);
-          alert('로그인해주세요.');
+    if (!isIdDuplicate) {
+      mutation.mutate(
+        { id, email, password },
+        {
+          onSuccess: () => {
+            setIsSignUp(false);
+            alert('로그인해주세요.');
+          },
+          onError: () => {
+            alert('Sign Up Failed.');
+          },
         },
-        onError: () => {
-          alert('Sign Up Failed.');
-        },
-      },
-    );
+      );
+    } else {
+      alert('이미 사용 중인 ID입니다.');
+    }
   };
 
   return (
