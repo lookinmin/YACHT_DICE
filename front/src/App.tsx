@@ -8,6 +8,8 @@ import ThemeBtn from './components/ThemeBtn';
 import { Route, Routes } from 'react-router-dom';
 import { StartPage } from './pages/StartPage';
 import { Footer } from './components/Footer';
+import { Main } from './pages/Main';
+import { PrevLogin } from './components/PrevLogin';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -34,7 +36,10 @@ const App: React.FC = () => {
           theme={theme}
         />
         <Routes>
-          <Route path="/" element={<StartPage />} />
+          <Route path="/login" element={<StartPage />} />
+          <Route path="/" element={<PrevLogin />}>
+            <Route path="/" element={<Main />} />
+          </Route>
         </Routes>
         <Footer />
       </div>

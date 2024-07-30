@@ -4,6 +4,14 @@ from app.schemas import user as user_schemas
 from app.models import user as user_models
 from app.db import SessionLocal
 from passlib.context import CryptContext
+from datetime import datetime, timedelta
+import jwt
+from dotenv import load_dotenv
+import os
+
+SECRET_KEY = os.getenv('SECRET_KEY', "default")
+ALGORITHM = 'HS256'
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 router = APIRouter()
 
@@ -18,6 +26,32 @@ def get_db():
         
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+def verify(plain : str, hashed : str) -> bool:
+    return pwd_context.verify(plain, hashed)
+
+def create_access_token(data : dict, expires_delta : timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=60)
+    to_encode.update({"exp" : expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+@router.post('/login')
+def login(user : user_schemas.UserCreate, db: Session = Depends(get_db)):
+    is_user = db.query(user_models.User).filter(user_models.User.id == user.id).first()
+    if not is_user or not verify(user.password, is_user.password):
+        raise HTTPException(status_code=400, detail="INVALID ID or Password")
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub" : is_user.id}, expires_delta = access_token_expires
+    )
+    
+    return {"access_token" : access_token, "token_type" : "bearer"}
 
 @router.post('/signup', response_model= user_schemas.UserOut)
 def create_user(user : user_schemas.UserCreate, db : Session = Depends(get_db)):   
