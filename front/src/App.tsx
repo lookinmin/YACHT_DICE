@@ -1,11 +1,12 @@
 // src/App.tsx
-import React from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useEffect } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { themeAtom } from './atoms/themeAtom';
+import { authState } from './atoms/authAtom';
 import { lightTheme, darkTheme } from './styles/theme';
 import ThemeBtn from './components/ThemeBtn';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { StartPage } from './pages/StartPage';
 import { Footer } from './components/Footer';
 import { Main } from './pages/Main';
@@ -21,6 +22,19 @@ const GlobalStyle = createGlobalStyle`
 
 const App: React.FC = () => {
   const [theme, setTheme] = useRecoilState(themeAtom);
+  const [auth, setAuth] = useRecoilState(authState);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setAuth({ isLogin: true });
+      navigate('/');
+    } else {
+      setAuth({ isLogin: false });
+      navigate('/login');
+    }
+  }, [setAuth, navigate]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
