@@ -50,16 +50,21 @@ const LoginDiv = styled.div`
 `;
 
 export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     id: '',
     password: '',
   });
+  // 로그인 버튼 클릭 시, BE로 보낼 user 데이터
+
   const setAuthState = useSetRecoilState(authState);
-  const navigate = useNavigate();
+  // 로그인 유지시킬 recoil value
 
   const mutation = useMutation((user: { id: string; password: string }) =>
     login(user),
   );
+  // login() method를 통해 `/login`으로 user data post
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -68,20 +73,27 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
       [name]: value,
     }));
   };
+  // 현재 입력되는 값들을 user data로 setting
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const { id, password } = formData;
     mutation.mutate(
+      // post
       { id, password },
       {
         onSuccess: (data) => {
+          // post return success -> return value
           const token = data.data.access_token;
+          // BE는 로그인을 성공한 유저에게 토큰을 부여한다.
           localStorage.setItem('token', token);
+          // localStorage를 통해 유저의 토큰을 저장한다.
           setAuthState({ isLogin: true });
+          // recoil의 로그인 값을 true로 변경
           alert(`WELCOME ${id}`);
           navigate('/');
+          // 로그인 성공 -> 메인화면으로 이동
         },
         onError: () => {
           alert('LOGIN FAIL');
