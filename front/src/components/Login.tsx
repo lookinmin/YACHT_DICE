@@ -8,6 +8,7 @@ import { login } from '../api/instance';
 import { useMutation } from 'react-query';
 import { useSetRecoilState } from 'recoil';
 import { authState } from '../atoms/authAtom';
+import { userState } from '../atoms/userInfo';
 
 const LoginDiv = styled.div`
   display: flex;
@@ -59,6 +60,7 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
   // 로그인 버튼 클릭 시, BE로 보낼 user 데이터
 
   const setAuthState = useSetRecoilState(authState);
+  const setUserState = useSetRecoilState(userState);
   // 로그인 유지시킬 recoil value
 
   const mutation = useMutation((user: { id: string; password: string }) =>
@@ -85,13 +87,14 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
       {
         onSuccess: (data) => {
           // post return success -> return value
-          const token = data.data.access_token;
+          const { token, userId, friends } = data.data;
           // BE는 로그인을 성공한 유저에게 토큰을 부여한다.
           localStorage.setItem('token', token);
           // localStorage를 통해 유저의 토큰을 저장한다.
           setAuthState({ isLogin: true });
+          setUserState({ id: userId, friends });
           // recoil의 로그인 값을 true로 변경
-          alert(`WELCOME ${id}`);
+          alert(`WELCOME ${userId}`);
           navigate('/');
           // 로그인 성공 -> 메인화면으로 이동
         },
