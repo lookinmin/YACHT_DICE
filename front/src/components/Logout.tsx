@@ -11,9 +11,9 @@ export const Logout: React.FC = () => {
   const navigate = useNavigate();
 
   const logoutHandler = () => {
-    localStorage.removeItem('token');
+    localStorage.clear();
     setAuth({ isLogin: false });
-    setUser({ id: null, friends: [] });
+    setUser({ id: null });
     navigate('/login');
   };
 

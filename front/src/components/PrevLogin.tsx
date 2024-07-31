@@ -5,6 +5,5 @@ import { authState } from '../atoms/authAtom';
 
 export const PrevLogin: React.FC = () => {
   const { isLogin } = useRecoilValue(authState);
-
   return isLogin ? <Outlet /> : <Navigate to="/login" />;
 };

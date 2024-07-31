@@ -18,4 +18,13 @@ def login(user: user_schemas.UserLogin, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"sub": is_user.id}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    # # friends 필드를 문자열 배열로 변환
+    # friends = is_user.friends if isinstance(is_user.friends, list) else []
+    # friends_str_list = [str(friend) for friend in friends]
+
+    return {
+        "access_token": access_token,
+        "userId": is_user.id,
+        "token_type": "bearer"
+    }

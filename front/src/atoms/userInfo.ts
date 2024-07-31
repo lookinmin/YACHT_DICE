@@ -1,11 +1,12 @@
 import { atom } from 'recoil';
 
+const userId = localStorage.getItem('userId');
+
 interface UserInfo {
   id: string | null;
-  friends: string[];
 }
 
 export const userState = atom<UserInfo>({
   key: 'userInfo',
-  default: { id: null, friends: [] },
+  default: { id: userId },
 });

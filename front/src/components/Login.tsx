@@ -87,12 +87,14 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
       {
         onSuccess: (data) => {
           // post return success -> return value
-          const { token, userId, friends } = data.data;
+          console.log(data.data);
+          const { access_token, userId } = data.data;
           // BE는 로그인을 성공한 유저에게 토큰을 부여한다.
-          localStorage.setItem('token', token);
+          localStorage.setItem('token', access_token);
+          localStorage.setItem('userId', userId);
           // localStorage를 통해 유저의 토큰을 저장한다.
           setAuthState({ isLogin: true });
-          setUserState({ id: userId, friends });
+          setUserState({ id: userId });
           // recoil의 로그인 값을 true로 변경
           alert(`WELCOME ${userId}`);
           navigate('/');

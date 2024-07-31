@@ -1,6 +1,8 @@
 import React from 'react';
 import { ImgHeader } from './ImgHeader';
 import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../atoms/userInfo';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -18,10 +20,14 @@ const VSdiv = styled.div`
 `;
 
 export const Ready: React.FC = () => {
+  const userInfo = useRecoilValue(userState);
+  console.log(userInfo);
   return (
     <StyledDiv>
       <ImgHeader />
-      <VSdiv></VSdiv>
+      <VSdiv>
+        <p>{userInfo.id}</p>
+      </VSdiv>
     </StyledDiv>
   );
 };

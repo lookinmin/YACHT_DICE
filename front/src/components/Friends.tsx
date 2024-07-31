@@ -6,6 +6,7 @@ const StyledDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  justify-content: center;
   background-color: #9b9b9b;
   width: 100%;
   padding: 3vh 0;

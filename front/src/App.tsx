@@ -1,10 +1,9 @@
 // src/App.tsx
 import React, { useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { themeAtom } from './atoms/themeAtom';
 import { authState } from './atoms/authAtom';
-import { userState } from './atoms/userInfo';
 import { lightTheme, darkTheme } from './styles/theme';
 import ThemeBtn from './components/ThemeBtn';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -23,8 +22,7 @@ const GlobalStyle = createGlobalStyle`
 
 const App: React.FC = () => {
   const [theme, setTheme] = useRecoilState(themeAtom);
-  const [auth, setAuth] = useRecoilState(authState);
-  const [userInfo, setUserInfo] = useRecoilState(userState);
+  const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   useEffect(() => {
