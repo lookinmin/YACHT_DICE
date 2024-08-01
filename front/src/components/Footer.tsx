@@ -11,9 +11,9 @@ const StyledFooter = styled.div`
   gap: 2vh;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid #7a7a7a;
-  margin: 0 4vw;
-  padding: 1vh 0;
+  // border-top: 1px solid #7a7a7a;
+  padding: 2vh 0;
+  background-color: #585858;
 
   & > p:nth-child(1) {
     font-size: 1.3rem;
