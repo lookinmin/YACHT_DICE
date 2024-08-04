@@ -5,14 +5,25 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../atoms/userInfo';
 import { FaUserCircle } from 'react-icons/fa';
 import Button from '@mui/material/Button';
+import { Logout } from './Logout';
 
 const StyledDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  justify-content: space-between;
   gap: 5vh;
   padding: 5vh 0;
   width: 90%;
+  min-height: 65.3vh;
+
+  & > .top {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 80%;
+    justify-content: space-between;
+    align-items: center;
+  }
 `;
 
 const VSdiv = styled.div`
@@ -47,10 +58,14 @@ const BtnDiv = styled.div`
 
 export const Ready: React.FC = () => {
   const userInfo = useRecoilValue(userState);
-  console.log(userInfo);
+  // console.log(userInfo);
   return (
     <StyledDiv>
-      <ImgHeader />
+      <div className="top">
+        <ImgHeader />
+        <Logout />
+      </div>
+
       <VSdiv>
         <div className="userClass">
           <FaUserCircle size={35} />
