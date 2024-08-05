@@ -2,6 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models import user as user_models
 from app.dependencies.database import get_db
+import logging
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 router = APIRouter()
 
@@ -14,6 +18,7 @@ def get_friends(id:str, db : Session = Depends(get_db)):
 
     friends = db_user.friends if db_user.friends else []
     cvt_list = [str(friend) for friend in friends]
+    print("친구목록", cvt_list)
     return {"friends" : cvt_list}
 
 @router.post('/addUser/{origin}/{other}')
@@ -24,22 +29,33 @@ def add_friend(origin: str, other: str, db: Session = Depends(get_db)):
     if not userA or not userB:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # Ensure that friends lists are not None
     if userA.friends is None:
         userA.friends = []
     if userB.friends is None:
         userB.friends = []
-    
-    # User ID를 friends 배열에 추가
+
+    # Add the other user's ID to the friends list if not already added
     if other not in userA.friends:
         userA.friends.append(other)
-        # 변경 사항을 세션에 반영
-        db.add(userA)
         
     if origin not in userB.friends:
         userB.friends.append(origin)
-        # 변경 사항을 세션에 반영
-        db.add(userB)
-    
-    db.commit()
-    
+
+    print(f"Before commit: userA.friends = {userA.friends}")
+    print(f"Before commit: userB.friends = {userB.friends}")
+
+    try:
+        db.commit()
+        db.refresh(userA)
+        db.refresh(userB)
+        print("Commit successful")
+        return {"message": "complete"}
+    except Exception as e:
+        db.rollback()
+        print(f"Commit failed: {e}")
+        raise HTTPException(status_code=500, detail="Database commit failed")
+    finally:
+        db.close()  # 확실하게 세션을 종료
+
     return {"message": "complete"}
