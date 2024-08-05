@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ImgHeader } from './ImgHeader';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
@@ -6,6 +6,7 @@ import { userState } from '../atoms/userInfo';
 import { FaUserCircle } from 'react-icons/fa';
 import Button from '@mui/material/Button';
 import { Logout } from './Logout';
+import { PiQuestionMark } from 'react-icons/pi';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -39,7 +40,8 @@ const VSdiv = styled.div`
     align-items: center;
     justify-content: center;
     gap: 10px;
-
+    padding-top: 10px;
+    min-width: 75px;
     & > p {
       margin: 0 !important;
       font-size: 1.5em;
@@ -59,6 +61,9 @@ const BtnDiv = styled.div`
 export const Ready: React.FC = () => {
   const userInfo = useRecoilValue(userState);
   // console.log(userInfo);
+
+  const [isReady, setIsReady] = useState<boolean>(false);
+
   return (
     <StyledDiv>
       <div className="top">
@@ -72,12 +77,15 @@ export const Ready: React.FC = () => {
           <p>{userInfo.id}</p>
         </div>
 
-        <p style={{ fontSize: '1.3em', fontWeight: 600 }}>VS</p>
-
-        <div className="userClass">
-          <FaUserCircle size={35} />
-          <p>{userInfo.id}</p>
-        </div>
+        <p style={{ fontSize: '1.4em', fontWeight: 600 }}>VS</p>
+        {isReady ? (
+          <div className="userClass">
+            <FaUserCircle size={35} />
+            <p>{userInfo.id}</p>
+          </div>
+        ) : (
+          <PiQuestionMark size={75} />
+        )}
       </VSdiv>
       <BtnDiv>
         <Button variant="outlined" fullWidth>

@@ -67,3 +67,11 @@ export const searchUser = async (id: string): Promise<{ users: string[] }> => {
   const response = await axiosInstance.post(`/search/${id}`);
   return response.data;
 };
+
+export const addUserToFriend = async (
+  origin: string,
+  other: string,
+): Promise<{ message: string }> => {
+  const response = await axiosInstance.post(`/addUser/${origin}/${other}`);
+  return response.data;
+};

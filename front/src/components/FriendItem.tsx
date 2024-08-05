@@ -6,6 +6,10 @@ import { RiUserSearchLine, RiUserHeartLine } from 'react-icons/ri';
 import { GoPlusCircle } from 'react-icons/go';
 import { GiRollingDices } from 'react-icons/gi';
 import IconButton from '@mui/material/IconButton';
+import { addUserToFriend } from '../api/instance';
+import { useMutation } from 'react-query';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../atoms/userInfo';
 
 const Friend = styled.div<FriendProps>`
   display: flex;
@@ -36,6 +40,39 @@ const Friend = styled.div<FriendProps>`
 `;
 
 const FriendItem: React.FC<FriendProps> = ({ isFriend, id }) => {
+  const userInfo = useRecoilValue(userState);
+  const userId = userInfo.id as string;
+
+  const mutation = useMutation(
+    ({ origin, other }: { origin: string; other: string }) => {
+      return addUserToFriend(origin, other);
+    },
+  );
+
+  const addUserHandler = (origin: string, other: string) => {
+    // 친구 추가 확인 메시지 표시
+    const confirmAdd = window.confirm(
+      '친구로 추가하시겠습니까? \n 한쪽이 추가하면 다른 한쪽도 자동으로 친구로 추가됩니다.',
+    );
+
+    if (confirmAdd) {
+      mutation.mutate(
+        { origin, other },
+        {
+          onSuccess: (data) => {
+            alert('친구추가 성공!');
+            if (data.message === 'complete') {
+              window.location.reload();
+            }
+          },
+          onError: () => {
+            alert('친구 추가에 실패했습니다.');
+          },
+        },
+      );
+    }
+  };
+
   return (
     <Friend isFriend={isFriend} id={id}>
       <div className="front">
@@ -52,7 +89,7 @@ const FriendItem: React.FC<FriendProps> = ({ isFriend, id }) => {
         </IconButton>
       ) : (
         <IconButton color="primary" type="submit" title="ADD Friend">
-          <GoPlusCircle size={36} />
+          <GoPlusCircle size={36} onClick={() => addUserHandler(userId, id)} />
         </IconButton>
       )}
     </Friend>
