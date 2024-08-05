@@ -6,11 +6,13 @@ import { InputAdornment } from '@mui/material';
 import { FaRegCircleUser } from 'react-icons/fa6';
 import { BsSearchHeart } from 'react-icons/bs';
 import IconButton from '@mui/material/IconButton';
-import { RiUserSearchLine, RiUserHeartLine } from 'react-icons/ri';
-import { GoPlusCircle, GoXCircle } from 'react-icons/go';
-import { GiRollingDices } from 'react-icons/gi';
 import { ThemeProvider } from '@mui/material/styles';
 import { tfTheme2 } from '../styles/theme';
+import { userState } from '../atoms/userInfo';
+import { useRecoilValue } from 'recoil';
+import { getFriends } from '../api/instance';
+import { useQuery } from 'react-query';
+import { Suspense } from 'react';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -54,38 +56,21 @@ const StyledDiv = styled.div`
   }
 `;
 
-interface FriendProps {
-  isFriend: boolean;
-}
-
-const Friend = styled.div<FriendProps>`
-  display: flex;
-  flex-flow: row nowrap;
-  width: 80%;
-  box-sizing: border-box;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 10px;
-  background-color: ${(props) => (props.isFriend ? '#8ead90' : '#83a9bb')};
-  padding: 0.5vh 1vw;
-  height: 57px;
-  color: ${(props) => (props.isFriend ? '#ffffff' : '#1a64d3')};
-  //color : #86aa9c
-  & > .front {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-
-    & > p {
-      font-size: 1.1em;
-      margin: 0 !important;
-    }
-  }
-`;
+const LazyFriendItem = React.lazy(() => import('./FriendItem'));
 
 export const Friends: React.FC = () => {
+  const userInfo = useRecoilValue(userState);
+  const userId = userInfo.id as string;
+
+  const { data, error, isLoading } = useQuery(['friends', userId], () =>
+    getFriends(userId),
+  );
+  if (isLoading) return <p>isLoading...</p>;
+  if (error) return <p>Error Occured!</p>;
+
+  const friendList = data?.data.friends || [];
+  console.log(friendList);
+
   return (
     <ThemeProvider theme={tfTheme2}>
       <StyledDiv>
@@ -116,27 +101,11 @@ export const Friends: React.FC = () => {
           </IconButton>
         </form>
 
-        <Friend isFriend={false}>
-          <div className="front">
-            <RiUserSearchLine size={30} />
-            <p>ID</p>
-          </div>
-
-          <IconButton color="primary" type="submit" title="ADD Friend">
-            <GoPlusCircle size={36} />
-          </IconButton>
-        </Friend>
-
-        <Friend isFriend={true}>
-          <div className="front">
-            <RiUserHeartLine size={30} />
-            <p>ID</p>
-          </div>
-
-          <IconButton color="inherit" type="submit" title="PLAY!">
-            <GiRollingDices size={44} />
-          </IconButton>
-        </Friend>
+        <Suspense fallback={<p>is Loading...</p>}>
+          {friendList.map((id: string) => (
+            <LazyFriendItem key={id} id={id} isFriend={true} />
+          ))}
+        </Suspense>
       </StyledDiv>
     </ThemeProvider>
   );

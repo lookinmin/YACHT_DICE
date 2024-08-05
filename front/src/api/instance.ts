@@ -58,3 +58,7 @@ export const checkId = async (id: string) => {
 export const login = async (user: { id: string; password: string }) => {
   return axiosInstance.post('/login', user);
 };
+
+export const getFriends = async (id: string) => {
+  return axiosInstance.get(`/friends/${id}`);
+};
