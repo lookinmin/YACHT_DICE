@@ -62,3 +62,8 @@ export const login = async (user: { id: string; password: string }) => {
 export const getFriends = async (id: string) => {
   return axiosInstance.get(`/friends/${id}`);
 };
+
+export const searchUser = async (id: string): Promise<{ users: string[] }> => {
+  const response = await axiosInstance.post(`/search/${id}`);
+  return response.data;
+};

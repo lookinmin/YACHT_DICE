@@ -87,7 +87,6 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
       {
         onSuccess: (data) => {
           // post return success -> return value
-          console.log(data.data);
           const { access_token, userId } = data.data;
           // BE는 로그인을 성공한 유저에게 토큰을 부여한다.
           localStorage.setItem('token', access_token);

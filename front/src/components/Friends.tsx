@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
 import { PiUsersThreeDuotone } from 'react-icons/pi';
@@ -10,8 +10,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import { tfTheme2 } from '../styles/theme';
 import { userState } from '../atoms/userInfo';
 import { useRecoilValue } from 'recoil';
-import { getFriends } from '../api/instance';
-import { useQuery } from 'react-query';
+import { getFriends, searchUser } from '../api/instance';
+import { useQuery, useMutation } from 'react-query';
 import { Suspense } from 'react';
 
 const StyledDiv = styled.div`
@@ -51,25 +51,50 @@ const StyledDiv = styled.div`
     grid-template-columns: 9.5fr 0.5fr;
     column-gap: 20px;
     position: center;
-    padding-bottom: 30px;
-    border-bottom: 2px dotted #929292;
   }
 `;
 
 const LazyFriendItem = React.lazy(() => import('./FriendItem'));
 
 export const Friends: React.FC = () => {
+  const [formData, setFormData] = useState({
+    id: '',
+  });
+  const [searchList, setSearchList] = useState<string[]>([]);
+
   const userInfo = useRecoilValue(userState);
   const userId = userInfo.id as string;
 
   const { data, error, isLoading } = useQuery(['friends', userId], () =>
     getFriends(userId),
   );
+
+  const mutation = useMutation((id: string) => searchUser(id), {
+    onSuccess: (data: { users: string[] }) => {
+      setSearchList(data.users);
+    },
+    onError: () => {
+      alert('No User Found');
+      setSearchList([]);
+    },
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData({ id: value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutation.mutate(formData.id);
+  };
+
   if (isLoading) return <p>isLoading...</p>;
   if (error) return <p>Error Occured!</p>;
 
   const friendList = data?.data.friends || [];
-  console.log(friendList);
+  // console.log(friendList);
+  console.log(searchList);
 
   return (
     <ThemeProvider theme={tfTheme2}>
@@ -81,11 +106,12 @@ export const Friends: React.FC = () => {
           </div>
         </div>
 
-        <form id="search">
+        <form id="search" onSubmit={handleSubmit}>
           <TextField
             id="outlined-basic"
             label="User ID"
             variant="outlined"
+            name="searchField"
             fullWidth
             InputProps={{
               startAdornment: (
@@ -95,11 +121,25 @@ export const Friends: React.FC = () => {
               ),
               placeholder: 'ENTER ID',
             }}
+            onChange={handleChange}
+            value={formData.id}
           />
           <IconButton color="primary" type="submit">
             <BsSearchHeart size={35} />
           </IconButton>
         </form>
+        <Suspense fallback={<p>is Loading...</p>}>
+          {searchList.map((id: string) => {
+            if (id === userId) return null; // id가 userId와 같다면 컴포넌트를 렌더링하지 않음
+
+            const isFriend = friendList.includes(id);
+            return <LazyFriendItem key={id} id={id} isFriend={isFriend} />;
+          })}
+        </Suspense>
+
+        <hr
+          style={{ border: '1px dotted #929292', width: '79%', margin: '0' }}
+        />
 
         <Suspense fallback={<p>is Loading...</p>}>
           {friendList.map((id: string) => (
