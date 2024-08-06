@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import login, signup, check_id, friends, search
+from app.routers import login, signup, check_id, friends, search, addUser
 
 app = FastAPI()
 
@@ -19,3 +19,4 @@ app.include_router(signup.router, tags=["signup"])
 app.include_router(check_id.router, tags=["check-id"])
 app.include_router(friends.router, tags=['friends'] )
 app.include_router(search.router, tags=['search'])
+app.include_router(addUser.router, tags=['addUser'])
