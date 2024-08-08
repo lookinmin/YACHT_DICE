@@ -10,6 +10,7 @@ import { addUserToFriend } from '../api/instance';
 import { useMutation } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../atoms/userInfo';
+import Swal from 'sweetalert2';
 
 const Friend = styled.div<FriendProps>`
   display: flex;
@@ -51,26 +52,41 @@ const FriendItem: React.FC<FriendProps> = ({ isFriend, id }) => {
 
   const addUserHandler = (origin: string, other: string) => {
     // 친구 추가 확인 메시지 표시
-    const confirmAdd = window.confirm(
-      '친구로 추가하시겠습니까? \n 한쪽이 추가하면 다른 한쪽도 자동으로 친구로 추가됩니다.',
-    );
-
-    if (confirmAdd) {
-      mutation.mutate(
-        { origin, other },
-        {
-          onSuccess: (data) => {
-            alert('친구추가 성공!');
-            if (data.message === 'complete') {
-              window.location.reload();
-            }
+    Swal.fire({
+      icon: 'question',
+      titleText: '친구추가 알림',
+      html: `${other}님을 친구로 추가하시겠습니까?<br/>한명이 추가하면 다른 한명도 자동으로 친구로 추가됩니다.`,
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'NO',
+      cancelButtonColor: 'red',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        mutation.mutate(
+          { origin, other },
+          {
+            onSuccess: (data) => {
+              Swal.fire({
+                icon: 'success',
+                text: `${other}님을 친구로 추가했습니다.`,
+              });
+              if (data.message === 'complete') {
+                window.location.reload();
+              }
+            },
+            onError: () => {
+              Swal.fire({
+                icon: 'error',
+                text: `친구추가 실패`,
+              });
+            },
           },
-          onError: () => {
-            alert('친구 추가에 실패했습니다.');
-          },
-        },
-      );
-    }
+        );
+      } else {
+        // Swal.close
+      }
+    });
   };
 
   return (

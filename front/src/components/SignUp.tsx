@@ -10,6 +10,7 @@ import { RiLockPasswordLine } from 'react-icons/ri';
 import { useMutation } from 'react-query';
 import { checkId, signup } from '../api/instance';
 import Button from '@mui/material/Button';
+import Swal from 'sweetalert2';
 
 const SignUpDiv = styled.div`
   display: flex;
@@ -113,7 +114,10 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
             setIdError(null);
           }
         } catch (err) {
-          alert('ERROR ID 중복체크 실패');
+          Swal.fire({
+            icon: 'error',
+            text: 'SERVER ERROR OCCURED',
+          });
           setIdError('SERVER ERROR');
         }
       }
@@ -152,15 +156,27 @@ export const SignUp: React.FC<LoginProps> = ({ setIsSignUp }) => {
         {
           onSuccess: () => {
             setIsSignUp(false);
-            alert('로그인해주세요.');
+            Swal.fire({
+              icon: 'success',
+              titleText: 'WELCOME YACHT DICE',
+              html: `반갑습니다. ${id}님\n로그인해주세요.`,
+            });
           },
           onError: () => {
-            alert('Sign Up Failed.');
+            Swal.fire({
+              icon: 'error',
+              titleText: 'ERROR',
+              html: `SIGN UP FAIL\nSERVER NOW IN ERROR`,
+            });
           },
         },
       );
     } else {
-      alert('이미 사용 중인 ID입니다.');
+      Swal.fire({
+        icon: 'warning',
+        titleText: 'ID Duplicated',
+        html: `이미 사용중인 ID 입니다.`,
+      });
     }
   };
 
