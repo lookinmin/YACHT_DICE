@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil';
 import { getFriends, searchUser } from '../api/instance';
 import { useQuery, useMutation } from 'react-query';
 import { Suspense } from 'react';
+import Swal from 'sweetalert2';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -74,7 +75,10 @@ export const Friends: React.FC = () => {
       setSearchList(data.users);
     },
     onError: () => {
-      alert('No User Found');
+      Swal.fire({
+        icon: 'error',
+        text: 'No User Found',
+      });
       setSearchList([]);
     },
   });

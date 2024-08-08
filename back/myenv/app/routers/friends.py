@@ -4,8 +4,8 @@ from app.models import user as user_models
 from app.dependencies.database import get_db
 import logging
 
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 router = APIRouter()
 

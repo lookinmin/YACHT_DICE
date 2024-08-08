@@ -9,6 +9,7 @@ import { useMutation } from 'react-query';
 import { useSetRecoilState } from 'recoil';
 import { authState } from '../atoms/authAtom';
 import { userState } from '../atoms/userInfo';
+import Swal from 'sweetalert2';
 
 const LoginDiv = styled.div`
   display: flex;
@@ -95,12 +96,20 @@ export const Login: React.FC<LoginProps> = ({ setIsSignUp }) => {
           setAuthState({ isLogin: true });
           setUserState({ id: userId });
           // recoil의 로그인 값을 true로 변경
-          alert(`WELCOME ${userId}`);
+          Swal.fire({
+            icon: 'success',
+            titleText: 'WELCOME',
+            html: `Hi ${userId}`,
+          });
           navigate('/');
           // 로그인 성공 -> 메인화면으로 이동
         },
         onError: () => {
-          alert('LOGIN FAIL');
+          Swal.fire({
+            icon: 'error',
+            titleText: 'LOGIN FAIL',
+            html: `Please Check ID or PASSWORD`,
+          });
         },
       },
     );
