@@ -1,20 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { authState } from '../atoms/authAtom';
+import Swal from 'sweetalert2';
+import Button from '@mui/material/Button';
 
 export const Game: React.FC = () => {
-  const params = useParams();
-  const user1 = params.user1;
-  const user2 = params.user2;
+  const { user1, user2 } = useParams<{ user1: string; user2: string }>();
+  const isAuth = useRecoilValue(authState).isLogin; // 로그인 상태 확인
+  const navigate = useNavigate();
 
-  const [isAI, setIsAI] = useState<boolean>(false);
+  const [isAI, setIsAI] = useState<boolean>(user2 === 'ai');
 
   useEffect(() => {
-    if (user2 === 'ai') {
-      setIsAI(true);
-    } else {
-      setIsAI(false); // 추가로 'ai'가 아닐 때 false로 설정해줌
-    }
-  }, [user2]); // user2가 변경될 때만 실행됨
+    const preventClose = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
 
-  return <div>Game</div>;
+    window.history.pushState(null, '', window.location.href); // 페이지 로드 시 현재 상태를 푸시
+    window.addEventListener('beforeunload', preventClose); // 창닫기, 새로고침 방지
+
+    const handlePopState = (event: PopStateEvent) => {
+      event.preventDefault();
+      window.history.pushState(null, '', window.location.href); // 뒤로가기 했을 때 현재 페이지로 다시 푸시
+      Swal.fire({
+        icon: 'warning',
+        titleText: '게임이 현재 진행중입니다.',
+        html: "게임이 완료되기 전엔, 뒤로가기를 할 수 없습니다. <br/>'EXIT'버튼을 이용해주세요.",
+      });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', preventClose); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    };
+  }, []);
+
+  // 로그인 상태가 아닌 경우 리다이렉트
+  if (!isAuth) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <div>
+      <Button variant="outlined" color="warning" onClick={() => navigate('/')}>
+        EXIT
+      </Button>
+      <h1>
+        Game between {user1} and {isAI ? 'AI' : user2}
+      </h1>
+
+      {/* 게임 로직을 이곳에 추가 */}
+    </div>
+  );
 };

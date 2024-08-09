@@ -25,22 +25,17 @@ const App: React.FC = () => {
   const [theme, setTheme] = useRecoilState(themeAtom);
   const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setAuth({ isLogin: true });
-      if (location.pathname === '/login') {
-        navigate('/'); // 로그인 상태에서만 메인 페이지로 리다이렉트
-      }
     } else {
       setAuth({ isLogin: false });
-      if (location.pathname !== '/login') {
-        navigate('/login'); // 로그인 상태가 아니면 로그인 페이지로 리다이렉트
-      }
+      navigate('/login');
     }
-  }, [setAuth, navigate, location.pathname]);
+  }, [setAuth, navigate]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
