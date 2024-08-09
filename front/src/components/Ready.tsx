@@ -7,6 +7,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import Button from '@mui/material/Button';
 import { Logout } from './Logout';
 import { PiQuestionMark } from 'react-icons/pi';
+import { useNavigate } from 'react-router-dom';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -61,6 +62,7 @@ const BtnDiv = styled.div`
 export const Ready: React.FC = () => {
   const userInfo = useRecoilValue(userState);
   // console.log(userInfo);
+  const navigate = useNavigate();
 
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -91,7 +93,11 @@ export const Ready: React.FC = () => {
         <Button variant="outlined" fullWidth>
           Ready!
         </Button>
-        <Button variant="outlined" fullWidth>
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={() => navigate(`/game/${userInfo.id}/ai`)}
+        >
           Play With AI
         </Button>
       </BtnDiv>

@@ -98,7 +98,6 @@ export const Friends: React.FC = () => {
 
   const friendList = data?.data.friends || [];
   // console.log(friendList);
-  console.log(searchList);
 
   return (
     <ThemeProvider theme={tfTheme2}>

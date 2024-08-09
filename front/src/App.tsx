@@ -6,11 +6,12 @@ import { themeAtom } from './atoms/themeAtom';
 import { authState } from './atoms/authAtom';
 import { lightTheme, darkTheme } from './styles/theme';
 import ThemeBtn from './components/ThemeBtn';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { StartPage } from './pages/StartPage';
 import { Footer } from './components/Footer';
 import { Lobby } from './pages/Lobby';
 import { PrevLogin } from './components/PrevLogin';
+import { Game } from './pages/Game';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -24,17 +25,22 @@ const App: React.FC = () => {
   const [theme, setTheme] = useRecoilState(themeAtom);
   const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setAuth({ isLogin: true });
-      navigate('/');
+      if (location.pathname === '/login') {
+        navigate('/'); // 로그인 상태에서만 메인 페이지로 리다이렉트
+      }
     } else {
       setAuth({ isLogin: false });
-      navigate('/login');
+      if (location.pathname !== '/login') {
+        navigate('/login'); // 로그인 상태가 아니면 로그인 페이지로 리다이렉트
+      }
     }
-  }, [setAuth, navigate]);
+  }, [setAuth, navigate, location.pathname]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -51,6 +57,7 @@ const App: React.FC = () => {
         />
         <Routes>
           <Route path="/login" element={<StartPage />} />
+          <Route path="/game/:user1/:user2" element={<Game />} />
           <Route path="/" element={<PrevLogin />}>
             <Route path="/" element={<Lobby />} />
           </Route>
