@@ -4,11 +4,22 @@ import { useRecoilValue } from 'recoil';
 import { authState } from '../atoms/authAtom';
 import Swal from 'sweetalert2';
 import Button from '@mui/material/Button';
+import styled from 'styled-components';
+import { Left } from '../components/Game/Left';
+import { Right } from '../components/Game/Right';
+import { Center } from '../components/Game/Center';
+
+const GameDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1.2fr 2fr 1.2fr;
+  column-gap: 2vw;
+  place-content: center;
+  min-height: 70vh;
+`;
 
 export const Game: React.FC = () => {
   const { user1, user2 } = useParams<{ user1: string; user2: string }>();
   const isAuth = useRecoilValue(authState).isLogin; // 로그인 상태 확인
-  const navigate = useNavigate();
 
   const [isAI, setIsAI] = useState<boolean>(user2 === 'ai');
 
@@ -44,15 +55,13 @@ export const Game: React.FC = () => {
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="warning" onClick={() => navigate('/')}>
-        EXIT
-      </Button>
+    <GameDiv>
+      <Left />
       <h1>
         Game between {user1} and {isAI ? 'AI' : user2}
       </h1>
 
       {/* 게임 로직을 이곳에 추가 */}
-    </div>
+    </GameDiv>
   );
 };
