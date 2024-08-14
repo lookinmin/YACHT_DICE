@@ -13,8 +13,8 @@ const GameDiv = styled.div`
   display: grid;
   grid-template-columns: 1.2fr 2fr 1.2fr;
   column-gap: 2vw;
-  place-content: center;
-  min-height: 70vh;
+  // place-content: center;
+  min-height: 100vh;
 `;
 
 export const Game: React.FC = () => {
@@ -62,6 +62,7 @@ export const Game: React.FC = () => {
       </h1>
 
       {/* 게임 로직을 이곳에 추가 */}
+      <Right />
     </GameDiv>
   );
 };
